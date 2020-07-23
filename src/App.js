@@ -10,9 +10,10 @@ import {
 import InfoBox from "./InfoBox";
 import Map from "./Map";
 import Table from "./Table";
-import { sortData } from "./util";
+import { sortData, prettyPrintStat } from "./util";
 // import LineGraph from "./LineGraph";
 import "leaflet/dist/leaflet.css";
+// import { prettyPrintStat } from "./util";
 
 function App() {
   const [countries, setCountries] = useState([]);
@@ -22,6 +23,7 @@ function App() {
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
   const [mapCountries, setMapCountries] = useState([]);
+  const [casesType, setCasesType] = useState("cases");
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -89,23 +91,31 @@ function App() {
 
         <div className="app__stats">
           <InfoBox
+            onClick={(e) => e.setCasesType("cases")}
             title="CoronaVirus cases"
-            cases={countryInfo.todayCases}
+            cases={prettyPrintStat(countryInfo.todayCases)}
             total={countryInfo.cases}
           />
           <InfoBox
+            onClick={(e) => e.setCasesType("recovered")}
             title="Recovered"
             cases={countryInfo.todayRecovered}
             total={countryInfo.recovered}
           />
           <InfoBox
+            onClick={(e) => e.setCasesType("deaths")}
             title="Deaths"
             cases={countryInfo.todayDeaths}
             total={countryInfo.deaths}
           />
         </div>
 
-        <Map center={mapCenter} zoom={mapZoom} countries={mapCountries} />
+        <Map
+          casestype={casesType}
+          center={mapCenter}
+          zoom={mapZoom}
+          countries={mapCountries}
+        />
       </div>
       <Card className="app__right">
         <CardContent>
